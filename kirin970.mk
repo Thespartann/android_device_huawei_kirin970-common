@@ -28,10 +28,6 @@ DEVICE_PACKAGE_OVERLAYS += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/audio/audio_policy_configuration.xml:system/etc/audio_policy_configuration.xml
 
-# bfm
-PRODUCT_PACKAGES += \
-    bfm-ctl
-
 # Camera
 PRODUCT_PACKAGES += \
     Snap
