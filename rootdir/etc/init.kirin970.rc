@@ -1,23 +1,33 @@
-import /vendor/etc/init/${ro.bootmode}/init.${ro.bootmode}.rc
+import init.${ro.hardware}.usb.rc
+import init.${ro.hardware}.power.rc
 
 on init
-    symlink /dev/block/platform/${ro.boot.boot_devices} /dev/block/bootdevice
+    mount debugfs /sys/kernel/debug /sys/kernel/debug mode=755
+
+    write /sys/kernel/mm/transparent_hugepage/enabled "never"
+
+    start watchdogd
 
 on fs
-    mount ext4 /dev/block/by-name/cust /cust wait ro
-    mount ext4 /dev/block/by-name/cust${ro.boot.slot_suffix} /cust wait ro
-    mount ext4 /dev/block/by-name/preload /preload wait ro
-    mount ext4 /dev/block/by-name/preload${ro.boot.slot_suffix} /preload wait ro
-    mount ext4 /dev/block/by-name/product /product wait ro
-    mount ext4 /dev/block/by-name/product${ro.boot.slot_suffix} /product wait ro
-    mount ext4 /dev/block/by-name/version /version wait ro
-    mount ext4 /dev/block/by-name/version${ro.boot.slot_suffix} /version wait ro
-    mount none /odm/hw_odm/${ro.boot.product.hardware.sku} /hw_odm bind
-    mount none /product/lost+found /product/app bind
-    mount none /vendor/lost+found /vendor/etc/audio bind
+    mount_all /vendor/etc/fstab.${ro.hardware}
+    setprop ro.crypto.fuse_sdcard false
+
+on post-fs
+
+    chmod 0666 /dev/ion
+    chmod 0666 /dev/graphics/fb0
 
 on post-fs-data
-    start teecd
+    mkdir /data/media 0770 media_rw media_rw
+    mkdir /data/misc/gatord 0700 root root
+
+    restorecon_recursive /data/local/tmp/lava
+
+on property:usb_speed.switch=high
+    write /sys/kernel/debug/f72c0000.usb/config "0"
+
+on property:usb_speed.switch=full
+    write /sys/kernel/debug/f72c0000.usb/config "1"
 
 on property:ro.lineage.device=*
     setprop qemu.hw.mainkeys 1
@@ -26,9 +36,17 @@ on property:sys.user.0.ce_available=true
     mkdir /data/sec_storage_data 0700 system system
     mkdir /data/sec_storage_data_users 0700 system system
 
-service charger /sbin/chargeonlymode -p
-    class charger
-    user root
-    group root system
-    critical
-    seclabel u:r:charger:s0
+on property:sys.user.0.de_available=true
+    mkdir /data/sec_storage_data 0700 system system
+    mkdir /data/sec_storage_data_users 0700 system system 
+
+service watchdogd /system/bin/watchdogd 10 20
+    class core
+    oneshot
+    seclabel u:r:watchdogd:s0
+
+service bugreport /system/bin/dumpstate -d -p -B -z \
+    -o /data/user_de/0/com.android.shell/files/bugreports/bugreport
+    class main
+    disabled
+    oneshot
