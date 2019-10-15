@@ -18,16 +18,11 @@ $(call inherit-product, vendor/huawei/kirin970-common/kirin970-common-vendor.mk)
 
 # Overlays
 DEVICE_PACKAGE_OVERLAYS += \
-    $(LOCAL_PATH)/overlay \
-    $(LOCAL_PATH)/overlay-lineage
+    $(LOCAL_PATH)/overlay
 
 # Audio
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/audio/audio_policy_configuration.xml:system/etc/audio_policy_configuration.xml
-
-# Camera
-PRODUCT_PACKAGES += \
-    Snap
 
 # Device init scripts
 PRODUCT_PACKAGES += \
@@ -40,10 +35,6 @@ PRODUCT_PACKAGES += \
 # Input
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/keylayout/fingerprint.kl:system/usr/keylayout/fingerprint.kl
-
-# LineageHw
-PRODUCT_PACKAGES += \
-    lineage.touch@1.0-service.kirin970
 
 # NFC
 PRODUCT_PACKAGES += \
@@ -76,7 +67,3 @@ PRODUCT_BOOT_JARS += \
 # Recovery
 PRODUCT_PACKAGES += \
     resize2fs_static
-
-# Trust HAL
-PRODUCT_PACKAGES += \
-    lineage.trust@1.0-service

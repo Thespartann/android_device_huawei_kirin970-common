@@ -37,7 +37,3 @@
 /sec_storage(/.*)?     u:object_r:teecd_data_file:s0
 /splash2(/.*)?         u:object_r:splash2_data_file:s0
 /version(/.*)?         u:object_r:system_file:s0
-
-# Binaries
-/system/bin/hw/lineage\.touch@1.0-service\.kirin970            u:object_r:shal_lineage_touch_default_exec:s0
-/system/bin/hw/lineage\.trust@1\.0-service                     u:object_r:shal_lineage_trust_default_exec:s0
