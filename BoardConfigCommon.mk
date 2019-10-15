@@ -81,9 +81,6 @@ TARGET_COPY_OUT_VENDOR := vendor
 # Properties
 TARGET_SYSTEM_PROP := $(VENDOR_PATH)/system.prop
 
-# Radio
-TARGET_PROVIDES_QTI_TELEPHONY_JAR := true
-
 # Recovery
 TARGET_RECOVERY_FSTAB := $(VENDOR_PATH)/rootdir/etc/fstab.kirin970
 TARGET_USERIMAGES_USE_EXT4 := true
